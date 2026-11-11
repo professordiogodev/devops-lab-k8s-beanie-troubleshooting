@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: menu
+  namespace: beanie-broken
+  labels: {app: menu}
+spec:
+  replicas: 2
+  selector:
+    matchLabels: {app: menu}
+  template:
+    metadata:
+      labels: {app: menu}
+    spec:
+      containers:
+        - name: menu
+          image: __IMAGE_REPO__:0.1.O
+          args: ["menu"]
+          ports:
+            - containerPort: 8001
+          livenessProbe:
+            httpGet: {path: /healthz, port: 8001}
+            periodSeconds: 10
+          readinessProbe:
+            httpGet: {path: /readyz, port: 8001}
+            periodSeconds: 5
+          resources:
+            requests: {cpu: 50m, memory: 64Mi}
+            limits: {memory: 128Mi}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: menu
+  namespace: beanie-broken
+spec:
+  selector: {app: menu}
+  ports:
+    - port: 8001
+      targetPort: 8001

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reporter
+  namespace: beanie-broken
+  labels: {app: reporter}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: reporter}
+  template:
+    metadata:
+      labels: {app: reporter}
+    spec:
+      containers:
+        - name: reporter
+          image: __IMAGE__
+          command: ["python", "-c"]
+          args:
+            - |
+              import time
+              print("building the monthly report...", flush=True)
+              data = bytearray(200 * 1024 * 1024)
+              for i in range(0, len(data), 4096):
+                  data[i] = 1
+              print("report ready", flush=True)
+              time.sleep(3600)
+          resources:
+            requests: {cpu: 50m, memory: 32Mi}
+            limits: {memory: 64Mi}

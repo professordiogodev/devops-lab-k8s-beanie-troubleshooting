@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifications
+  namespace: beanie-broken
+  labels: {app: notifications}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: notifications}
+  template:
+    metadata:
+      labels: {app: notifications}
+    spec:
+      containers:
+        - name: notifications
+          image: __IMAGE__
+          args: ["notifications"]
+          ports:
+            - containerPort: 8004
+          livenessProbe:
+            httpGet: {path: /healthz, port: 8004}
+            periodSeconds: 10
+          readinessProbe:
+            httpGet: {path: /readyz, port: 8004}
+            periodSeconds: 5
+          resources:
+            requests: {cpu: 50m, memory: 64Mi}
+            limits: {memory: 128Mi}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notifications
+  namespace: beanie-broken
+spec:
+  selector: {app: notification}
+  ports:
+    - port: 8004
+      targetPort: 8004

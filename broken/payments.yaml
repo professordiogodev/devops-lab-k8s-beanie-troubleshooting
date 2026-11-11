@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments
+  namespace: beanie-broken
+  labels: {app: payments}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: payments}
+  template:
+    metadata:
+      labels: {app: payments}
+    spec:
+      containers:
+        - name: payments
+          image: __IMAGE__
+          args: ["payments"]
+          ports:
+            - containerPort: 8003
+          livenessProbe:
+            httpGet: {path: /healthz, port: 8003}
+            periodSeconds: 10
+          readinessProbe:
+            httpGet: {path: /readyz, port: 8003}
+            periodSeconds: 5
+          resources:
+            requests: {cpu: 64, memory: 64Mi}
+            limits: {memory: 128Mi}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payments
+  namespace: beanie-broken
+spec:
+  selector: {app: payments}
+  ports:
+    - port: 8003
+      targetPort: 8003
