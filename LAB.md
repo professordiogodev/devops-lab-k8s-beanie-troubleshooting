@@ -2,9 +2,18 @@
 
 ## The situation
 
-It is 8:40 on a Saturday. The queue at the cafe starts at 9:00. You open the namespace and `kubectl get pods` is a wall of red: `ImagePullBackOff`, `Pending`, `CrashLoopBackOff`, `0/1`, `OOMKilled`. A colleague changed six things on Friday evening ("small cleanups") and went hiking.
+```text
+CASE FILE 2291 - "The Saturday Queue"
+Opened by  : the cafe owner, 08:40, twenty minutes before opening
+Complaint  : "The ordering system shows nothing but red."
+Scene      : namespace beanie-broken, one local cluster, six workloads
+Detective  : you
+Witnesses  : kubectl, and nobody else. The colleague who made the changes went hiking.
+```
 
-Real incidents are rarely one thing. They are several small, unrelated mistakes stacked on top of each other, and the skill is not knowing the answer to each one in advance; it is having a **method** that tells you, for any broken pod, where to look next. Kubernetes is very good at telling you what is wrong, if you ask the right object. You will practise that method on six faults, one at a time, with `kubectl` and nothing else.
+You open the scene and `kubectl get pods` is a wall of red: `ImagePullBackOff`, `Pending`, `CrashLoopBackOff`, `0/1`, `OOMKilled`. On Friday evening a colleague made six "small cleanups" and left. The queue starts at 9:00.
+
+Real incidents are rarely one thing. They are several small, unrelated mistakes stacked on top of each other, and a good detective does not need to know the culprit in advance: she has a **method** that says, for any broken pod, where to look next. Kubernetes is very good at telling you what is wrong, if you ask the right object. You will work the case with `kubectl` and nothing else, one exhibit at a time.
 
 > **Your mission**
 > - Start the broken namespace and look at it
@@ -17,7 +26,7 @@ Real incidents are rarely one thing. They are several small, unrelated mistakes 
 
 ---
 
-## Part 0 - The broken namespace
+## Open the case: the scene
 
 Fork this repository, clone your fork and run:
 
@@ -30,7 +39,9 @@ kubectl get pods -n beanie-broken
 
 ---
 
-## Part 1 - The method
+## Standing procedure: five questions, always in this order
+
+<!-- gif: recon -->
 
 Always the same five questions, in this order:
 
@@ -44,11 +55,11 @@ Always the same five questions, in this order:
 
 ---
 
-## Part 2 - Six faults, one at a time
+## The exhibits: six faults, one at a time
 
-Work through them in any order. For each one, record in `DIAGNOSIS.md` **the command** you ran and **the line** of its output that showed the cause.
+Work through the exhibits in any order. For each one, record in `DIAGNOSIS.md` (the numbers match its headings) **the command** you ran and **the line** of its output that showed the cause: the evidence, not the guess.
 
-| # | Where | What you see | Where to look |
+| Exhibit | Where | What you see | Where to look |
 |---|-------|--------------|---------------|
 | 1 | `menu` | the pods never start | `describe pod`: the Events say why the image cannot be fetched |
 | 2 | `payments` | the pod just sits there | `describe pod`: a scheduling message about what the node cannot provide |
@@ -70,7 +81,7 @@ Do not skip the notes: "I saw it was a typo" is not a diagnosis. The command and
 
 ---
 
-## Part 3 - The whole system
+## Reconstruction: does the whole system work?
 
 When all six are repaired, every pod is `Running` and `Ready`. Prove that the five Beanie services talk to each other again:
 
@@ -84,7 +95,7 @@ A paid order means the gateway reached orders, orders reached menu, payments and
 
 ---
 
-## Part 4 - Prove it
+## Verdict - Prove it
 
 ```bash
 ./verify.sh
