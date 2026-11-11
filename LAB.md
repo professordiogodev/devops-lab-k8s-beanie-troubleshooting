@@ -13,7 +13,7 @@ Witnesses  : kubectl, and nobody else. The colleague who made the changes went h
 
 You open the scene and `kubectl get pods` is a wall of red: `ImagePullBackOff`, `Pending`, `CrashLoopBackOff`, `0/1`, `OOMKilled`. On Friday evening a colleague made six "small cleanups" and left. The queue starts at 9:00.
 
-Real incidents are rarely one thing. They are several small, unrelated mistakes stacked on top of each other, and a good detective does not need to know the culprit in advance: she has a **method** that says, for any broken pod, where to look next. Kubernetes is very good at telling you what is wrong, if you ask the right object. You will work the case with `kubectl` and nothing else, one exhibit at a time.
+Real incidents are rarely one thing. They are several small, unrelated mistakes stacked on top of each other, and a good detective does not need to know the culprit in advance: the detective has a **method** that says, for any broken pod, where to look next. Kubernetes is very good at telling you what is wrong, if you ask the right object. You will work the case with `kubectl` and nothing else, one exhibit at a time.
 
 > **Your mission**
 > - Start the broken namespace and look at it
